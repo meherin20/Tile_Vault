@@ -13,19 +13,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await auth.api.signUpEmail({
+    const response = await auth.api.signUpEmail({
       body: { name, email, password, image },
       headers: await headers(),
+      asResponse: true,
     });
 
-    if (!result) {
+    if (!response.ok) {
+      const data = await response.json();
       return NextResponse.json(
-        { error: "Registration failed" },
+        { error: data.message || "Registration failed" },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ success: true, user: result.user });
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message =
       error instanceof Error ? error.message : "Registration failed";

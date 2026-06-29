@@ -13,19 +13,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await auth.api.signInEmail({
+    const response = await auth.api.signInEmail({
       body: { email, password },
       headers: await headers(),
+      asResponse: true,
     });
 
-    if (!result) {
+    if (!response.ok) {
+      const data = await response.json();
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: data.message || "Invalid email or password" },
         { status: 401 }
       );
     }
 
-    return NextResponse.json({ success: true, user: result.user });
+    return response;
   } catch {
     return NextResponse.json(
       { error: "Invalid email or password" },
