@@ -1,36 +1,147 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TileVault - Tiles Gallery
+
+A modern tile gallery web application built with Next.js, showcasing premium ceramic, marble, porcelain, and artisan tiles.
+
+**Live URL:** [https://tilevault.vercel.app](https://tilevault.vercel.app) *(update after deployment)*
+
+## Purpose
+
+TileVault is a single-page application that allows users to browse, search, and view detailed information about premium tiles. Users can register, log in (including Google OAuth), and manage their profile. Private routes like tile details and profile pages require authentication.
+
+## Key Features
+
+- **Home Page** — Hero banner, scrolling marquee, and featured tiles carousel (SwiperJS)
+- **All Tiles Gallery** — Searchable grid of all tiles with real-time filtering
+- **Tile Details** — High-resolution preview with creator info, tags, pricing, and specs
+- **Authentication** — Email/password login & registration with Google OAuth (BetterAuth + MongoDB)
+- **My Profile** — View and update name & profile image
+- **Route Protection** — Middleware guards private routes (`/tile/[id]`, `/my-profile`)
+- **Responsive Design** — Fully responsive on mobile, tablet, and desktop
+- **Loading States** — Spinners shown during data fetching
+- **404 Page** — Custom not-found page
+- **API Proxy** — Login and registration proxied through Next.js API routes
+- **Environment Variables** — Secure configuration for MongoDB, auth secrets, and OAuth keys
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Next.js 16 (App Router) | Framework |
+| TypeScript | Type safety |
+| Tailwind CSS 4 + DaisyUI 5 | Styling & UI components |
+| BetterAuth | Authentication |
+| MongoDB | Database (via BetterAuth adapter) |
+| JSON Server | Local tile data API |
+| SwiperJS | Featured tiles carousel |
+| React Hot Toast | Toast notifications |
+| Concurrently | Run Next.js + JSON server together |
+
+## NPM Packages Used
+
+- `next`, `react`, `react-dom` — Core framework
+- `better-auth` — Authentication with MongoDB adapter
+- `mongodb` — Database driver
+- `daisyui` — UI component library
+- `swiper` — Carousel/slider for featured tiles
+- `react-hot-toast` — Toast error/success messages
+- `json-server` — REST API for tile data (local dev)
+- `concurrently` — Run multiple dev servers
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- MongoDB Atlas account (or local MongoDB)
+- Google OAuth credentials (optional, for social login)
+
+### Installation
+
+```bash
+git clone <your-repo-url>
+cd project-8
+npm install
+```
+
+### Environment Variables
+
+Copy the example file and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+Required variables:
+
+```
+MONGODB_URI=mongodb+srv://...
+MONGODB_DB_NAME=tiles-gallery
+BETTER_AUTH_SECRET=your-secret-min-32-chars
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+### Run Locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This starts:
+- Next.js on `http://localhost:3000`
+- JSON Server on `http://localhost:3001`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Route Permissions
 
-To learn more about Next.js, take a look at the following resources:
+| Route | Access |
+|---|---|
+| `/` | Public |
+| `/all-tiles` | Public |
+| `/login` | Public |
+| `/register` | Public |
+| `/tile/[id]` | Private (login required) |
+| `/my-profile` | Private (login required) |
+| `/my-profile/update` | Private (login required) |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                  # Next.js App Router pages
+│   ├── api/              # API routes (auth, tiles, proxy)
+│   ├── all-tiles/        # Gallery page
+│   ├── login/            # Login page
+│   ├── register/         # Registration page
+│   ├── my-profile/       # Profile & update pages
+│   └── tile/[id]/        # Tile details page
+├── components/           # Reusable UI components
+├── lib/                  # Auth, API, types, MongoDB
+└── middleware.ts          # Route protection
+db/
+└── tiles.json            # Tile data for JSON server
+```
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deploy to Vercel:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push to GitHub
+2. Import project in Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+The app uses Next.js App Router which handles client-side route reloading natively — no additional SPA configuration needed.
+
+## License
+
+MIT
